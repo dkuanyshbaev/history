@@ -11,12 +11,23 @@ struct HistoryState {
     secret: String,
 }
 
+struct Book {
+    name: String,
+}
+
+struct Post {
+    title: String,
+}
+
 #[tokio::main]
 async fn main() {
     let secret = env::var("SECRET").expect("SECRET must be set!");
     let state = Arc::new(HistoryState { secret });
     let history = Router::new()
         .route("/", get(home))
+        .route("/lib", get(lib))
+        .route("/blog", get(blog))
+        .route("/about", get(about))
         .with_state(state)
         .fallback(nothing);
 
@@ -29,9 +40,40 @@ async fn main() {
 }
 
 async fn home() -> impl IntoResponse {
-    let name = "denis".to_string();
-    let template = HelloTemplate { name };
-    HtmlTemplate(template)
+    HtmlTemplate(HomeTemplate {})
+}
+
+async fn lib() -> impl IntoResponse {
+    // научные книги и статьи
+    // учебники и пособия
+    // публицистика
+    // проза и поэзия
+
+    let books = vec![
+        Book {
+            name: "book one".to_string(),
+        },
+        Book {
+            name: "book two".to_string(),
+        },
+    ];
+    HtmlTemplate(LibTemplate { books })
+}
+
+async fn blog() -> impl IntoResponse {
+    let posts = vec![
+        Post {
+            title: "post one".to_string(),
+        },
+        Post {
+            title: "post two".to_string(),
+        },
+    ];
+    HtmlTemplate(BlogTemplate { posts })
+}
+
+async fn about() -> impl IntoResponse {
+    HtmlTemplate(AboutTemplate {})
 }
 
 async fn nothing() -> impl IntoResponse {
@@ -40,12 +82,25 @@ async fn nothing() -> impl IntoResponse {
 
 #[derive(Template)]
 #[template(path = "home.html")]
-struct HelloTemplate {
-    name: String,
+struct HomeTemplate;
+
+#[derive(Template)]
+#[template(path = "lib.html")]
+struct LibTemplate {
+    books: Vec<Book>,
 }
 
-struct HtmlTemplate<T>(T);
+#[derive(Template)]
+#[template(path = "blog.html")]
+struct BlogTemplate {
+    posts: Vec<Post>,
+}
 
+#[derive(Template)]
+#[template(path = "about.html")]
+struct AboutTemplate;
+
+struct HtmlTemplate<T>(T);
 impl<T> IntoResponse for HtmlTemplate<T>
 where
     T: Template,
