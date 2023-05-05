@@ -9,4 +9,4 @@ askama = "0.12"
 tokio = { version = "1.0", features = ["full"] }
 axum-login = { version = "0.5", features = ["sqlite"] }
 rand = { version = "0.8", features = ["min_const_gen"] }
-sqlx = { version = "0.6", default-features = false, features = ["runtime-tokio-rustls", "sqlite"] }
+# sqlx = { version = "0.6", default-features = false, features = ["runtime-tokio-rustls", "sqlite"] }
