@@ -3,7 +3,7 @@
 <h4>Posts:</h4>
 <ul>
 {% for post in posts %}
-  <li>{{ post.title }}</li>
+    <li>{{ post.title }}<br>{{ post.body }}</li>
 {% endfor %}
 </ul>
 {% endblock %}
