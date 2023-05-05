@@ -6,7 +6,7 @@ use axum::{
     Extension, Router,
 };
 use axum_login::{
-    axum_sessions::{async_session::MemoryStore, SessionLayer},
+    axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
     extractors::AuthContext,
     memory_store::MemoryStore as AuthMemoryStore,
     secrecy::SecretVec,
@@ -73,7 +73,7 @@ struct Post {
 async fn main() {
     let secret = env::var("SECRET").expect("SECRET must be set!");
     let session_secret = rand::thread_rng().gen::<[u8; 64]>();
-    let session_store = MemoryStore::new();
+    let session_store = SessionMemoryStore::new();
     let session_layer = SessionLayer::new(session_store, &session_secret);
 
     let store = Arc::new(RwLock::new(HashMap::default()));
