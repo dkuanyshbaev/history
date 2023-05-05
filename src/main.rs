@@ -2,8 +2,8 @@ use askama::Template;
 use axum::{
     http::StatusCode,
     response::{Html, IntoResponse, Response},
-    routing::get,
-    Extension, Router,
+    routing::{get, post},
+    Extension, Form, Router,
 };
 use axum_login::{
     axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
@@ -13,8 +13,14 @@ use axum_login::{
     AuthLayer, AuthUser, RequireAuthorizationLayer,
 };
 use rand::Rng;
+use serde::Deserialize;
 use std::{collections::HashMap, env, net::SocketAddr, sync::Arc};
 use tokio::sync::RwLock;
+
+#[derive(Deserialize, Debug)]
+struct Input {
+    secret: String,
+}
 
 #[derive(Debug, Clone)]
 struct User {
@@ -85,11 +91,12 @@ async fn main() {
     let history = Router::new()
         .route("/protected", get(protected_handler))
         .route_layer(RequireAuth::login_with_role(Role::Admin..))
-        .route("/login", get(login))
+        .route("/login", post(login))
         .route("/logout", get(logout))
         .route("/", get(home))
         .route("/lib", get(lib))
         .route("/blog", get(blog))
+        .route("/show_form", get(show_form))
         .layer(auth_layer)
         .layer(session_layer)
         .fallback(nothing);
@@ -145,9 +152,28 @@ async fn protected_handler(Extension(user): Extension<User>) -> impl IntoRespons
     format!("Logged in as: {}", user.name)
 }
 
-async fn login(mut auth: Auth) {
-    let secret = "test".to_string();
-    let user = User::new_admin(secret);
+async fn show_form() -> Html<&'static str> {
+    Html(
+        r#"
+        <!doctype html>
+        <html>
+            <head></head>
+            <body>
+                <form action="/login" method="post">
+                    <label for="secret">
+                        Enter your secret:
+                        <input type="text" name="secret">
+                    </label>
+                    <input type="submit" value="Subscribe!">
+                </form>
+            </body>
+        </html>
+        "#,
+    )
+}
+
+async fn login(mut auth: Auth, Form(input): Form<Input>) {
+    let user = User::new_admin(input.secret);
     auth.login(&user).await.unwrap();
 }
 
