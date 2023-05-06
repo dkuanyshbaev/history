@@ -1,76 +1,37 @@
-use askama::Template;
-use axum::{
-    http::StatusCode,
-    response::{Html, IntoResponse, Response},
-    routing::{get, post},
-    Extension, Form, Router,
-};
+use axum::{http::StatusCode, response::IntoResponse, routing::get, Extension, Form, Router};
 use axum_login::{
     axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
     extractors::AuthContext,
     memory_store::MemoryStore as AuthMemoryStore,
-    secrecy::SecretVec,
     AuthLayer, AuthUser, RequireAuthorizationLayer,
 };
 use rand::Rng;
 use serde::Deserialize;
 use std::{collections::HashMap, env, net::SocketAddr, sync::Arc};
 use tokio::sync::RwLock;
+use tower_http::services::ServeDir;
+
+use auth::{Role, User};
+use templates::*;
+
+pub mod auth;
+pub mod templates;
+
+type Auth = AuthContext<usize, User, AuthMemoryStore<usize, User>, Role>;
+type RequireAuth = RequireAuthorizationLayer<usize, User, Role>;
 
 #[derive(Deserialize, Debug)]
 struct Input {
     secret: String,
 }
 
-#[derive(Debug, Clone)]
-struct User {
-    id: usize,
-    name: String,
-    password_hash: String,
-    role: Role,
-}
-
-impl User {
-    pub fn new_admin(secret: String) -> Self {
-        Self {
-            id: 42,
-            name: "Admin".to_string(),
-            password_hash: secret,
-            role: Role::Admin,
-        }
-    }
-}
-
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
-enum Role {
-    _User,
-    Admin,
-}
-
-impl AuthUser<usize, Role> for User {
-    fn get_id(&self) -> usize {
-        self.id
-    }
-
-    fn get_password_hash(&self) -> SecretVec<u8> {
-        SecretVec::new(self.password_hash.clone().into())
-    }
-
-    fn get_role(&self) -> Option<Role> {
-        Some(self.role.clone())
-    }
-}
-
-type Auth = AuthContext<usize, User, AuthMemoryStore<usize, User>, Role>;
-type RequireAuth = RequireAuthorizationLayer<usize, User, Role>;
-
-struct Book {
+pub struct Book {
     name: String,
     description: String,
     cover: String,
 }
 
-struct Post {
+pub struct Post {
     title: String,
     body: String,
 }
@@ -89,14 +50,15 @@ async fn main() {
     let auth_layer = AuthLayer::new(user_store, &session_secret);
 
     let history = Router::new()
-        .route("/protected", get(protected_handler))
+        .route("/books", get(books))
+        .route("/posts", get(posts))
         .route_layer(RequireAuth::login_with_role(Role::Admin..))
-        .route("/login", post(login))
+        .nest_service("/static", ServeDir::new("static"))
+        .route("/login", get(login_form).post(login))
         .route("/logout", get(logout))
         .route("/", get(home))
         .route("/lib", get(lib))
         .route("/blog", get(blog))
-        .route("/show_form", get(show_form))
         .layer(auth_layer)
         .layer(session_layer)
         .fallback(nothing);
@@ -148,28 +110,16 @@ async fn blog() -> impl IntoResponse {
     HtmlTemplate(BlogTemplate { posts })
 }
 
-async fn protected_handler(Extension(user): Extension<User>) -> impl IntoResponse {
-    format!("Logged in as: {}", user.name)
+async fn books(Extension(user): Extension<User>) -> impl IntoResponse {
+    format!("Books. Logged in as: {}", user.name)
 }
 
-async fn show_form() -> Html<&'static str> {
-    Html(
-        r#"
-        <!doctype html>
-        <html>
-            <head></head>
-            <body>
-                <form action="/login" method="post">
-                    <label for="secret">
-                        Enter your secret:
-                        <input type="text" name="secret">
-                    </label>
-                    <input type="submit" value="Subscribe!">
-                </form>
-            </body>
-        </html>
-        "#,
-    )
+async fn posts(Extension(user): Extension<User>) -> impl IntoResponse {
+    format!("Posts. Logged in as: {}", user.name)
+}
+
+async fn login_form() -> impl IntoResponse {
+    HtmlTemplate(LoginTemplate {})
 }
 
 async fn login(mut auth: Auth, Form(input): Form<Input>) {
@@ -184,37 +134,4 @@ async fn logout(mut auth: Auth) {
 
 async fn nothing() -> impl IntoResponse {
     (StatusCode::NOT_FOUND, "Nothing to see here")
-}
-
-#[derive(Template)]
-#[template(path = "home.html")]
-struct HomeTemplate;
-
-#[derive(Template)]
-#[template(path = "lib.html")]
-struct LibTemplate {
-    books: Vec<Book>,
-}
-
-#[derive(Template)]
-#[template(path = "blog.html")]
-struct BlogTemplate {
-    posts: Vec<Post>,
-}
-
-struct HtmlTemplate<T>(T);
-impl<T> IntoResponse for HtmlTemplate<T>
-where
-    T: Template,
-{
-    fn into_response(self) -> Response {
-        match self.0.render() {
-            Ok(html) => Html(html).into_response(),
-            Err(err) => (
-                StatusCode::INTERNAL_SERVER_ERROR,
-                format!("Failed to render template. Error: {}", err),
-            )
-                .into_response(),
-        }
-    }
 }
