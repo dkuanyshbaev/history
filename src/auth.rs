@@ -9,7 +9,7 @@ pub struct User {
 }
 
 impl User {
-    pub fn new_admin(secret: String) -> Self {
+    pub fn new(secret: String) -> Self {
         Self {
             id: 42,
             name: "Admin".to_string(),

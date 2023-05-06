@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 {% block content %}
 <h4>Posts:</h4>
 <ul>
@@ -6,5 +6,6 @@
     <li>{{ post.title }}<br>{{ post.body }}</li>
 {% endfor %}
 <br><a href="/">home</a>
+<br><a href="/logout">logout</a>
 </ul>
 {% endblock %}

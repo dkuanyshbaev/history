@@ -41,3 +41,15 @@ pub struct BlogTemplate {
 #[derive(Template)]
 #[template(path = "login.html")]
 pub struct LoginTemplate;
+
+#[derive(Template)]
+#[template(path = "admin/books.html")]
+pub struct BooksTemplate {
+    pub books: Vec<Book>,
+}
+
+#[derive(Template)]
+#[template(path = "admin/posts.html")]
+pub struct PostsTemplate {
+    pub posts: Vec<Post>,
+}

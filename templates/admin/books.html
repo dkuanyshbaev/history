@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "../base.html" %}
 {% block content %}
 <h4>Books:</h4>
 <ul>
@@ -6,5 +6,6 @@
   <li>{{ book.name }} {{ book.description }} {{ book.cover }}</li>
 {% endfor %}
 <br><a href="/">home</a>
+<br><a href="/logout">logout</a>
 </ul>
 {% endblock %}
