@@ -1,9 +1,4 @@
-use axum::{
-    extract::{Path, State},
-    response::{IntoResponse, Redirect},
-    routing::get,
-    Form, Router,
-};
+use axum::{response::IntoResponse, routing::get, Router};
 use axum_login::{
     axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
     extractors::AuthContext,
@@ -19,13 +14,15 @@ use tower_http::services::ServeDir;
 
 use auth::{Role, User};
 use error::HistoryError;
-use models::{Book, NewBook};
+use models::Book;
 use templates::*;
+use views::*;
 
 pub mod auth;
 pub mod error;
 pub mod models;
 pub mod templates;
+pub mod views;
 
 const DB_FILE: &str = "db/history.db";
 
@@ -33,11 +30,11 @@ type Auth = AuthContext<usize, User, AuthMemoryStore<usize, User>, Role>;
 type RequireAuth = RequireAuthorizationLayer<usize, User, Role>;
 
 #[derive(Deserialize, Debug)]
-struct LoginInput {
+pub struct LoginInput {
     secret: String,
 }
 
-struct HistoryState {
+pub struct HistoryState {
     secret: String,
     db: SqlitePool,
 }
@@ -71,12 +68,14 @@ async fn main() {
     let auth_layer = AuthLayer::new(user_store, &session_secret);
 
     let history = Router::new()
-        .route("/books", get(books))
-        .route("/new_book", get(book_form).post(create_book))
+        // Books
+        .route("/books", get(books::all))
+        .route("/books/new", get(books::form).post(books::create))
+        // Posts
         .route_layer(RequireAuth::login_with_role(Role::Admin..))
         .nest_service("/static", ServeDir::new("static"))
-        .route("/login", get(login_form).post(login))
-        .route("/logout", get(logout))
+        .route("/login", get(admin::form).post(admin::login))
+        .route("/logout", get(admin::logout))
         .route("/", get(home))
         // .route("/lib", get(lib))
         // .route("/blog", get(blog))
@@ -102,118 +101,8 @@ async fn home() -> impl IntoResponse {
 //     // учебники и пособия
 //     // публицистика
 //     // проза и поэзия
-//
-//     let books = vec![
-//         Book {
-//             name: "book one".to_string(),
-//             description: "description one".to_string(),
-//             cover: "cover one".to_string(),
-//         },
-//         Book {
-//             name: "book two".to_string(),
-//             description: "description two".to_string(),
-//             cover: "cover two".to_string(),
-//         },
-//     ];
 //     HtmlTemplate(LibTemplate { books })
 // }
-
-// async fn blog() -> impl IntoResponse {
-//     let posts = vec![
-//         Post {
-//             title: "post one".to_string(),
-//             body: "body one".to_string(),
-//         },
-//         Post {
-//             title: "post two".to_string(),
-//             body: "body two".to_string(),
-//         },
-//     ];
-//     HtmlTemplate(BlogTemplate { posts })
-// }
-
-//--------------------------------------------------------------------
-// Books:
-//--------------------------------------------------------------------
-async fn books(State(state): State<Arc<HistoryState>>) -> Result<impl IntoResponse, HistoryError> {
-    let books = Book::list(&state.db).await?;
-    Ok(HtmlTemplate(BooksTemplate { books }))
-}
-
-async fn book_form() -> impl IntoResponse {
-    HtmlTemplate(NewBookTemplate {})
-}
-
-async fn show_book(
-    Path(id): Path<u32>,
-    State(state): State<Arc<HistoryState>>,
-) -> Result<impl IntoResponse, HistoryError> {
-    let book = Book::fetch(&state.db, id).await?;
-    Ok(HtmlTemplate(BookTemplate { book }))
-}
-
-async fn create_book(
-    State(state): State<Arc<HistoryState>>,
-    Form(new_book): Form<NewBook>,
-) -> Result<impl IntoResponse, HistoryError> {
-    Book::create(&state.db, new_book).await?;
-    Ok(Redirect::to("/books"))
-}
-
-async fn update_book(
-    Path(id): Path<u32>,
-    State(state): State<Arc<HistoryState>>,
-    Form(new_book): Form<NewBook>,
-) -> Result<impl IntoResponse, HistoryError> {
-    Book::update(&state.db, id, new_book).await?;
-    Ok(Redirect::to("/books"))
-}
-
-async fn delete_book(
-    Path(id): Path<u32>,
-    State(state): State<Arc<HistoryState>>,
-) -> Result<impl IntoResponse, HistoryError> {
-    Book::delete(&state.db, id).await?;
-    Ok(Redirect::to("/books"))
-}
-//--------------------------------------------------------------------
-
-// async fn posts() -> impl IntoResponse {
-//     let posts = vec![
-//         Post {
-//             title: "post one".to_string(),
-//             body: "body one".to_string(),
-//         },
-//         Post {
-//             title: "post two".to_string(),
-//             body: "body two".to_string(),
-//         },
-//     ];
-//     HtmlTemplate(PostsTemplate { posts })
-// }
-
-async fn login_form() -> impl IntoResponse {
-    HtmlTemplate(LoginTemplate {})
-}
-
-async fn login(
-    mut auth: Auth,
-    State(state): State<Arc<HistoryState>>,
-    Form(input): Form<LoginInput>,
-) -> impl IntoResponse {
-    if state.secret.eq(&input.secret) {
-        let user = User::new(input.secret);
-        auth.login(&user).await.unwrap();
-        Redirect::to("/books")
-    } else {
-        Redirect::to("/login")
-    }
-}
-
-async fn logout(mut auth: Auth) -> impl IntoResponse {
-    auth.logout().await;
-    Redirect::to("/")
-}
 
 async fn nothing() -> HistoryError {
     HistoryError::NotFound
