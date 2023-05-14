@@ -136,7 +136,7 @@ async fn home() -> impl IntoResponse {
 // Books:
 //--------------------------------------------------------------------
 async fn books(State(state): State<Arc<HistoryState>>) -> Result<impl IntoResponse, HistoryError> {
-    let books = Book::all(&state.db).await?;
+    let books = Book::list(&state.db).await?;
     Ok(HtmlTemplate(BooksTemplate { books }))
 }
 
@@ -148,7 +148,7 @@ async fn show_book(
     Path(id): Path<u32>,
     State(state): State<Arc<HistoryState>>,
 ) -> Result<impl IntoResponse, HistoryError> {
-    let book = Book::get(&state.db, id).await?;
+    let book = Book::fetch(&state.db, id).await?;
     Ok(HtmlTemplate(BookTemplate { book }))
 }
 
