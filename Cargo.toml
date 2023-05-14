@@ -5,9 +5,11 @@ edition = "2021"
 
 [dependencies]
 axum = "0.6"
+axum-login = "0.5"
 askama = "0.12"
 tokio = { version = "1.0", features = ["full"] }
-axum-login = { version = "0.5", features = ["sqlite"] }
-rand = { version = "0.8", features = ["min_const_gen"] }
+tower-http = { version = "0.4", features = ["fs"] }
 serde = { version = "1.0", features = ["derive"] }
-tower-http = { version = "0.4.0", features = ["fs"] }
+rand = { version = "0.8", features = ["min_const_gen"] }
+sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "sqlite" ] }
+futures = "0.3"

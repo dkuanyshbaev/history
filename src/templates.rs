@@ -1,4 +1,5 @@
-use crate::{Book, Post};
+// use crate::{Book, Post};
+use crate::Book;
 use askama::Template;
 use axum::{
     http::StatusCode,
@@ -32,11 +33,11 @@ pub struct LibTemplate {
     pub books: Vec<Book>,
 }
 
-#[derive(Template)]
-#[template(path = "blog.html")]
-pub struct BlogTemplate {
-    pub posts: Vec<Post>,
-}
+// #[derive(Template)]
+// #[template(path = "blog.html")]
+// pub struct BlogTemplate {
+//     pub posts: Vec<Post>,
+// }
 
 #[derive(Template)]
 #[template(path = "login.html")]
@@ -48,8 +49,8 @@ pub struct BooksTemplate {
     pub books: Vec<Book>,
 }
 
-#[derive(Template)]
-#[template(path = "admin/posts.html")]
-pub struct PostsTemplate {
-    pub posts: Vec<Post>,
-}
+// #[derive(Template)]
+// #[template(path = "admin/posts.html")]
+// pub struct PostsTemplate {
+//     pub posts: Vec<Post>,
+// }
