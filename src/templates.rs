@@ -49,6 +49,16 @@ pub struct BooksTemplate {
     pub books: Vec<Book>,
 }
 
+#[derive(Template)]
+#[template(path = "admin/book.html")]
+pub struct BookTemplate {
+    pub book: Book,
+}
+
+#[derive(Template)]
+#[template(path = "admin/book_form.html")]
+pub struct NewBookTemplate;
+
 // #[derive(Template)]
 // #[template(path = "admin/posts.html")]
 // pub struct PostsTemplate {

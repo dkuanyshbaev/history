@@ -1,5 +1,5 @@
 use axum::{
-    extract::State,
+    extract::{Path, State},
     response::{IntoResponse, Redirect},
     routing::get,
     Form, Router,
@@ -19,7 +19,7 @@ use tower_http::services::ServeDir;
 
 use auth::{Role, User};
 use error::HistoryError;
-use models::Book;
+use models::{Book, NewBook};
 use templates::*;
 
 pub mod auth;
@@ -72,6 +72,7 @@ async fn main() {
 
     let history = Router::new()
         .route("/books", get(books))
+        .route("/new_book", get(book_form).post(create_book))
         .route_layer(RequireAuth::login_with_role(Role::Admin..))
         .nest_service("/static", ServeDir::new("static"))
         .route("/login", get(login_form).post(login))
@@ -139,10 +140,42 @@ async fn books(State(state): State<Arc<HistoryState>>) -> Result<impl IntoRespon
     Ok(HtmlTemplate(BooksTemplate { books }))
 }
 
-// async fn books(State(state): State<Arc<HistoryState>>) -> Result<impl IntoResponse, HistoryError> {
-//     let books = Book::all(&state.db).await?;
-//     Ok(HtmlTemplate(BooksTemplate { books }))
-// }
+async fn book_form() -> impl IntoResponse {
+    HtmlTemplate(NewBookTemplate {})
+}
+
+async fn show_book(
+    Path(id): Path<u32>,
+    State(state): State<Arc<HistoryState>>,
+) -> Result<impl IntoResponse, HistoryError> {
+    let book = Book::get(&state.db, id).await?;
+    Ok(HtmlTemplate(BookTemplate { book }))
+}
+
+async fn create_book(
+    State(state): State<Arc<HistoryState>>,
+    Form(new_book): Form<NewBook>,
+) -> Result<impl IntoResponse, HistoryError> {
+    Book::create(&state.db, new_book).await?;
+    Ok(Redirect::to("/books"))
+}
+
+async fn update_book(
+    Path(id): Path<u32>,
+    State(state): State<Arc<HistoryState>>,
+    Form(new_book): Form<NewBook>,
+) -> Result<impl IntoResponse, HistoryError> {
+    Book::update(&state.db, id, new_book).await?;
+    Ok(Redirect::to("/books"))
+}
+
+async fn delete_book(
+    Path(id): Path<u32>,
+    State(state): State<Arc<HistoryState>>,
+) -> Result<impl IntoResponse, HistoryError> {
+    Book::delete(&state.db, id).await?;
+    Ok(Redirect::to("/books"))
+}
 //--------------------------------------------------------------------
 
 // async fn posts() -> impl IntoResponse {
