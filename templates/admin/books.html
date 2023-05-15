@@ -1,11 +1,34 @@
 {% extends "../base.html" %}
 {% block content %}
-<h4>Books:</h4>
+<nav class="navbar navbar-expand-lg bg-dark justify-content-center" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">На главную</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mx-auto">
+                <a class="nav-link active" href="/books">Книги</a>
+                <a class="nav-link" href="#">Блог</a>
+                <a class="nav-link" href="#">Статьи</a>
+                <a class="nav-link" href="#">Учебники</a>
+                <a class="nav-link" href="#">Публицистика</a>
+                <a class="nav-link" href="#">Проза</a>
+                <a class="nav-link" href="#">Поэзия</a>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/logout">Выход</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<br>
+
+<h4>Книги:</h4>
 <ul>
-{% for book in books %}
-  <li>{{ book.name }} {{ book.description }} {{ book.cover }}</li>
-{% endfor %}
-<br><a href="/">home</a>
-<br><a href="/logout">logout</a>
+    {% for book in books %}
+    <li>{{ book.name }} {{ book.description }} {{ book.cover }}</li>
+    {% endfor %}
 </ul>
+
 {% endblock %}

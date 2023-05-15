@@ -1,4 +1,3 @@
-// use crate::{Book, Post};
 use crate::Book;
 use askama::Template;
 use axum::{

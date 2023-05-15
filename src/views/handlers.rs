@@ -7,10 +7,6 @@ pub async fn home() -> impl IntoResponse {
 }
 
 pub async fn lib() -> impl IntoResponse {
-    // научные книги и статьи
-    // учебники и пособия
-    // публицистика
-    // проза и поэзия
     HtmlTemplate(HomeTemplate {})
 }
 

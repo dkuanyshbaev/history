@@ -1,5 +1,5 @@
 use axum::{
-    routing::{get, post},
+    routing::{get, put},
     Router,
 };
 use axum_login::{
@@ -71,15 +71,16 @@ async fn main() {
 
     let history = Router::new()
         // Books
+        .route("/lib", get(handlers::lib))
+        // !!! moved
+        .route_layer(RequireAuth::login_with_role(Role::Admin..))
         .route("/books", get(books::all))
         .route("/books/new", get(books::form).post(books::create))
-        .route("/books/:id", post(books::update).post(books::delete))
-        .route_layer(RequireAuth::login_with_role(Role::Admin..))
+        .route("/books/:id", put(books::update).delete(books::delete))
         .nest_service("/static", ServeDir::new("static"))
         .route("/login", get(admin::form).post(admin::login))
         .route("/logout", get(admin::logout))
         .route("/", get(handlers::home))
-        .route("/lib", get(handlers::lib))
         .route("/blog", get(handlers::blog))
         .fallback(handlers::nothing)
         .layer(auth_layer)
