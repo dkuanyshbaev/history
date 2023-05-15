@@ -1,5 +1,4 @@
 use axum::{
-    response::IntoResponse,
     routing::{get, post},
     Router,
 };
@@ -19,7 +18,6 @@ use tower_http::services::ServeDir;
 use auth::{Role, User};
 use error::HistoryError;
 use models::Book;
-use templates::*;
 use views::*;
 
 pub mod auth;
@@ -76,21 +74,17 @@ async fn main() {
         .route("/books", get(books::all))
         .route("/books/new", get(books::form).post(books::create))
         .route("/books/:id", post(books::update).post(books::delete))
-        // Posts
-        // .route("/posts", get(posts::all))
-        // .route("/posts/new", get(posts::form).post(posts::create))
-        // .route("/posts/:id", post(posts::update).post(posts::delete))
         .route_layer(RequireAuth::login_with_role(Role::Admin..))
         .nest_service("/static", ServeDir::new("static"))
         .route("/login", get(admin::form).post(admin::login))
         .route("/logout", get(admin::logout))
-        .route("/", get(home))
-        .route("/lib", get(lib))
-        .route("/blog", get(blog))
+        .route("/", get(handlers::home))
+        .route("/lib", get(handlers::lib))
+        .route("/blog", get(handlers::blog))
+        .fallback(handlers::nothing)
         .layer(auth_layer)
         .layer(session_layer)
-        .with_state(state)
-        .fallback(nothing);
+        .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
     println!("Listening on {}", addr);
@@ -98,24 +92,4 @@ async fn main() {
         .serve(history.into_make_service())
         .await
         .unwrap();
-}
-
-async fn home() -> impl IntoResponse {
-    HtmlTemplate(HomeTemplate {})
-}
-
-async fn lib() -> impl IntoResponse {
-    // научные книги и статьи
-    // учебники и пособия
-    // публицистика
-    // проза и поэзия
-    HtmlTemplate(HomeTemplate {})
-}
-
-async fn blog() -> impl IntoResponse {
-    HtmlTemplate(HomeTemplate {})
-}
-
-async fn nothing() -> HistoryError {
-    HistoryError::NotFound
 }
