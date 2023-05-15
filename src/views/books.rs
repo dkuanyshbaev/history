@@ -38,7 +38,7 @@ pub async fn create(
     Ok(Redirect::to("/books"))
 }
 
-pub async fn update_book(
+pub async fn update(
     Path(id): Path<u32>,
     State(state): State<Arc<HistoryState>>,
     Form(new_book): Form<NewBook>,
@@ -47,7 +47,7 @@ pub async fn update_book(
     Ok(Redirect::to("/books"))
 }
 
-pub async fn delete_book(
+pub async fn delete(
     Path(id): Path<u32>,
     State(state): State<Arc<HistoryState>>,
 ) -> Result<impl IntoResponse, HistoryError> {

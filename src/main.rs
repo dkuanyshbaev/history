@@ -1,4 +1,8 @@
-use axum::{response::IntoResponse, routing::get, Router};
+use axum::{
+    response::IntoResponse,
+    routing::{get, post},
+    Router,
+};
 use axum_login::{
     axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
     extractors::AuthContext,
@@ -71,14 +75,18 @@ async fn main() {
         // Books
         .route("/books", get(books::all))
         .route("/books/new", get(books::form).post(books::create))
+        .route("/books/:id", post(books::update).post(books::delete))
         // Posts
+        // .route("/posts", get(posts::all))
+        // .route("/posts/new", get(posts::form).post(posts::create))
+        // .route("/posts/:id", post(posts::update).post(posts::delete))
         .route_layer(RequireAuth::login_with_role(Role::Admin..))
         .nest_service("/static", ServeDir::new("static"))
         .route("/login", get(admin::form).post(admin::login))
         .route("/logout", get(admin::logout))
         .route("/", get(home))
-        // .route("/lib", get(lib))
-        // .route("/blog", get(blog))
+        .route("/lib", get(lib))
+        .route("/blog", get(blog))
         .layer(auth_layer)
         .layer(session_layer)
         .with_state(state)
@@ -96,13 +104,17 @@ async fn home() -> impl IntoResponse {
     HtmlTemplate(HomeTemplate {})
 }
 
-// async fn lib() -> impl IntoResponse {
-//     // научные книги и статьи
-//     // учебники и пособия
-//     // публицистика
-//     // проза и поэзия
-//     HtmlTemplate(LibTemplate { books })
-// }
+async fn lib() -> impl IntoResponse {
+    // научные книги и статьи
+    // учебники и пособия
+    // публицистика
+    // проза и поэзия
+    HtmlTemplate(HomeTemplate {})
+}
+
+async fn blog() -> impl IntoResponse {
+    HtmlTemplate(HomeTemplate {})
+}
 
 async fn nothing() -> HistoryError {
     HistoryError::NotFound
