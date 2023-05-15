@@ -1,12 +1,15 @@
 use axum::{
-    routing::{get, put},
+    routing::{get, post},
     Router,
 };
 use axum_login::{
-    axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
+    // axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
+    axum_sessions::{async_session::CookieStore as SessionStore, SessionLayer},
     extractors::AuthContext,
     memory_store::MemoryStore as AuthMemoryStore,
-    AuthLayer, AuthUser, RequireAuthorizationLayer,
+    AuthLayer,
+    AuthUser,
+    RequireAuthorizationLayer,
 };
 use rand::Rng;
 use serde::Deserialize;
@@ -60,7 +63,7 @@ async fn main() {
     });
 
     let session_secret = rand::thread_rng().gen::<[u8; 64]>();
-    let session_store = SessionMemoryStore::new();
+    let session_store = SessionStore::new();
     let session_layer = SessionLayer::new(session_store, &session_secret);
 
     let store = Arc::new(RwLock::new(HashMap::default()));
@@ -71,18 +74,23 @@ async fn main() {
 
     let history = Router::new()
         // Books
-        .route("/lib", get(handlers::lib))
-        // !!! moved
-        .route_layer(RequireAuth::login_with_role(Role::Admin..))
         .route("/books", get(books::all))
-        .route("/books/new", get(books::form).post(books::create))
-        .route("/books/:id", put(books::update).delete(books::delete))
+        .route("/books/create", get(books::form).post(books::create))
+        .route("/books/update/:id", post(books::update))
+        .route("/books/delete/:id", post(books::delete))
+        // Routes above are protected
+        // .route_layer(RequireAuth::login_with_role(Role::Admin..))
+        // Static
         .nest_service("/static", ServeDir::new("static"))
+        // Admin
         .route("/login", get(admin::form).post(admin::login))
         .route("/logout", get(admin::logout))
+        // Handlers
         .route("/", get(handlers::home))
+        .route("/lib", get(handlers::lib))
         .route("/blog", get(handlers::blog))
         .fallback(handlers::nothing)
+        // Layers
         .layer(auth_layer)
         .layer(session_layer)
         .with_state(state);
