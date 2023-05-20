@@ -32,34 +32,16 @@ pub struct LibTemplate {
     pub books: Vec<Book>,
 }
 
-// #[derive(Template)]
-// #[template(path = "blog.html")]
-// pub struct BlogTemplate {
-//     pub posts: Vec<Post>,
-// }
-
 #[derive(Template)]
-#[template(path = "login.html")]
+#[template(path = "admin/login.html")]
 pub struct LoginTemplate;
 
 #[derive(Template)]
-#[template(path = "admin/books.html")]
+#[template(path = "admin/books/list.html")]
 pub struct BooksTemplate {
     pub books: Vec<Book>,
 }
 
 #[derive(Template)]
-#[template(path = "admin/book.html")]
-pub struct BookTemplate {
-    pub book: Book,
-}
-
-#[derive(Template)]
-#[template(path = "admin/book_form.html")]
+#[template(path = "admin/books/add.html")]
 pub struct NewBookTemplate;
-
-// #[derive(Template)]
-// #[template(path = "admin/posts.html")]
-// pub struct PostsTemplate {
-//     pub posts: Vec<Post>,
-// }

@@ -10,6 +10,7 @@ pub struct NewBook {
     pub name: String,
     pub description: String,
     pub cover: String,
+    pub file: String,
 }
 
 #[derive(FromRow, Clone)]
@@ -18,6 +19,7 @@ pub struct Book {
     pub name: String,
     pub description: String,
     pub cover: String,
+    pub file: String,
 }
 
 impl Book {
@@ -35,10 +37,11 @@ impl Book {
     }
 
     pub async fn create(db: &SqlitePool, new_book: NewBook) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into books (name, description, cover) values (?, ?, ?)")
+        query("INSERT into books (name, description, cover, file) values (?, ?, ?, ?)")
             .bind(new_book.name)
             .bind(new_book.description)
             .bind(new_book.cover)
+            .bind(new_book.file)
             .execute(db)
             .await
     }
@@ -48,7 +51,7 @@ impl Book {
         id: u32,
         updated_book: NewBook,
     ) -> Result<SqliteQueryResult, Error> {
-        query("UPDATE books SET name = ?, description = ?, cover = ? WHERE id = ?")
+        query("UPDATE books SET name = ?, description = ?, cover = ?, file = ? WHERE id = ?")
             .bind(updated_book.name)
             .bind(updated_book.description)
             .bind(updated_book.cover)

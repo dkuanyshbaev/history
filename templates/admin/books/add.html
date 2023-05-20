@@ -1,0 +1,50 @@
+{% extends "../../base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">На главную</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mx-auto">
+                <a class="nav-link active" href="/books">Книги</a>
+                <a class="nav-link" href="#">Учебники</a>
+                <a class="nav-link" href="#">Блог</a>
+                <a class="nav-link" href="#">Статьи</a>
+                <a class="nav-link" href="#">Публицистика</a>
+                <a class="nav-link" href="#">Проза</a>
+                <a class="nav-link" href="#">Поэзия</a>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/logout">Выход</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<br>
+<div class="container">
+    <h4>Новая книга:</h4>
+    <form action="/books/create" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="name" class="form-label">Название</label>
+            <input type="text" class="form-control" id="name" required>
+        </div>
+        <div class="mb-3">
+            <label for="link" class="form-label">Ссылка на файл</label>
+            <input type="text" class="form-control" id="link" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Описание</label>
+            <textarea class="form-control" id="description" name="description" rows="8" required></textarea>
+        </div>
+        <div class="mb-3">
+            <label for="cover" class="form-label">Обложка</label>
+            <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help" required>
+            <div id="cover_help" class="form-text">Выберите изображение в формате jpg или png</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+    </form>
+    <br>
+</div>
+{% endblock %}

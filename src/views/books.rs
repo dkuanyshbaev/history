@@ -22,13 +22,13 @@ pub async fn form() -> impl IntoResponse {
     HtmlTemplate(NewBookTemplate {})
 }
 
-pub async fn show(
-    Path(id): Path<u32>,
-    State(state): State<Arc<HistoryState>>,
-) -> Result<impl IntoResponse, HistoryError> {
-    let book = Book::fetch(&state.db, id).await?;
-    Ok(HtmlTemplate(BookTemplate { book }))
-}
+// pub async fn show(
+//     Path(id): Path<u32>,
+//     State(state): State<Arc<HistoryState>>,
+// ) -> Result<impl IntoResponse, HistoryError> {
+//     let book = Book::fetch(&state.db, id).await?;
+//     Ok(HtmlTemplate(NewBookTemplate { book }))
+// }
 
 pub async fn create(
     State(state): State<Arc<HistoryState>>,

@@ -75,6 +75,7 @@ async fn main() {
     let history = Router::new()
         // Books
         .route("/books", get(books::all))
+        // .route("/books/:id", get(books::show))
         .route("/books/create", get(books::form).post(books::create))
         .route("/books/update/:id", post(books::update))
         .route("/books/delete/:id", post(books::delete))
