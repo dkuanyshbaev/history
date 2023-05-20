@@ -24,27 +24,35 @@
 </nav>
 <br>
 <div class="container">
-    <h4>Новая книга:</h4>
-    <form action="/books/create" method="post" enctype="multipart/form-data">
+    <form action="/books/update/{{ book.id }}" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="name" class="form-label">Название</label>
-            <input type="text" class="form-control" id="name" name="name" required>
+            <input type="text" class="form-control" id="name" name="name" value="{{ book.name }}" required>
         </div>
         <div class="mb-3">
             <label for="link" class="form-label">Ссылка на файл</label>
-            <input type="text" class="form-control" id="link" name="link" required>
+            <input type="text" class="form-control" id="link" name="link" value="{{ book.link }}" required>
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
-            <textarea class="form-control" id="description" name="description" rows="8" required></textarea>
+            <textarea class="form-control" id="description" name="description" rows="8" required>{{ book.description }}</textarea>
         </div>
+        <img src="/static/img/{{ book.cover }}" style="max-width:200px;" class="img-thumbnail">
         <div class="mb-3">
             <label for="cover" class="form-label">Обложка</label>
-            <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help" required>
-            <div id="cover_help" class="form-text">Выберите изображение в формате jpg или png</div>
+            <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help">
+            <div id="cover_help" class="form-text">Выберите новое изображение в формате jpg или png</div>
         </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="submit" class="btn btn-outline-primary">Сохранить</button>
+            <a class="btn btn-outline-primary" href="/books">Отмена</a>
+        </div>
     </form>
+    <br>
+    <form action="/books/delete/{{ book.id }}" method="post">
+        <button class="btn btn-outline-danger" type="submit" onclick="return confirm('Вы уверены, что хотите удалить это?');">Удалить</button>
+    </form>
+    <br>
     <br>
 </div>
 {% endblock %}

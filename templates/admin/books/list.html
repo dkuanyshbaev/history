@@ -25,9 +25,7 @@
 <br>
 <div class="container">
     <a class="btn btn-outline-success" href="/books/create">Добавить</a>
-    <br>
-    <br>
-    <h4>Книги:</h4>
+    <br><br>
     <ul>
         {% for book in books %}
         <li><a href="/books/update/{{ book.id }}">{{ book.name }}</a></li>

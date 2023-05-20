@@ -24,7 +24,6 @@
 </nav>
 <br>
 <div class="container">
-    <h4>Новая книга:</h4>
     <form action="/books/create" method="post" enctype="multipart/form-data">
         <div class="mb-3">
             <label for="name" class="form-label">Название</label>
@@ -43,7 +42,10 @@
             <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help" required>
             <div id="cover_help" class="form-text">Выберите изображение в формате jpg или png</div>
         </div>
-        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="submit" class="btn btn-outline-primary">Сохранить</button>
+            <a class="btn btn-outline-primary" href="/books">Отмена</a>
+        </div>
     </form>
     <br>
 </div>

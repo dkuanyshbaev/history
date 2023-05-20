@@ -1,16 +1,30 @@
 use axum::{
+    body::Bytes,
     extract::{Path, State},
     response::{IntoResponse, Redirect},
-    Form,
 };
-use axum_typed_multipart::TypedMultipart;
-use std::{fs::File, io::prelude::*, sync::Arc};
+use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
+use std::{
+    fs::{remove_file, File},
+    io::prelude::*,
+    sync::Arc,
+};
 
 use crate::{
-    models::{Book, BookWithImage, NewBook},
+    models::{Book, NewBook},
     templates::*,
     HistoryError, HistoryState,
 };
+
+const IMG_PATH: &str = "static/img";
+
+#[derive(TryFromMultipart)]
+pub struct BookWithImage {
+    pub name: String,
+    pub link: String,
+    pub description: String,
+    pub cover: FieldData<Bytes>,
+}
 
 pub async fn all(
     State(state): State<Arc<HistoryState>>,
@@ -45,7 +59,7 @@ pub async fn create(
             .file_name
             .unwrap_or(String::new()),
     };
-    let mut file = File::create(format!("static/img/{}", new_book.cover))?;
+    let mut file = File::create(format!("{}/{}", IMG_PATH, new_book.cover))?;
     file.write_all(&book_with_image.cover.contents)?;
     Book::create(&state.db, new_book).await?;
     Ok(Redirect::to("/books"))
@@ -54,9 +68,25 @@ pub async fn create(
 pub async fn update(
     Path(id): Path<u32>,
     State(state): State<Arc<HistoryState>>,
-    Form(new_book): Form<NewBook>,
+    TypedMultipart(book_with_image): TypedMultipart<BookWithImage>,
 ) -> Result<impl IntoResponse, HistoryError> {
-    Book::update(&state.db, id, new_book).await?;
+    let old_book = Book::fetch(&state.db, id).await?;
+    let file_name = book_with_image.cover.metadata.file_name.unwrap();
+    let new_cover = if file_name.eq(&"".to_string()) {
+        old_book.cover
+    } else {
+        let mut file = File::create(format!("{}/{}", IMG_PATH, file_name))?;
+        file.write_all(&book_with_image.cover.contents)?;
+        remove_file(format!("{}/{}", IMG_PATH, old_book.cover))?;
+        file_name
+    };
+    let updated_book = NewBook {
+        name: book_with_image.name,
+        link: book_with_image.link,
+        description: book_with_image.description,
+        cover: new_cover,
+    };
+    Book::update(&state.db, id, updated_book).await?;
     Ok(Redirect::to("/books"))
 }
 
@@ -64,6 +94,8 @@ pub async fn delete(
     Path(id): Path<u32>,
     State(state): State<Arc<HistoryState>>,
 ) -> Result<impl IntoResponse, HistoryError> {
+    let book = Book::fetch(&state.db, id).await?;
     Book::delete(&state.db, id).await?;
+    remove_file(format!("{}/{}", IMG_PATH, book.cover))?;
     Ok(Redirect::to("/books"))
 }

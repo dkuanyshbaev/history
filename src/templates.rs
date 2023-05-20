@@ -22,6 +22,7 @@ where
     }
 }
 
+// Handlers:
 #[derive(Template)]
 #[template(path = "home.html")]
 pub struct HomeTemplate;
@@ -32,10 +33,12 @@ pub struct LibTemplate {
     pub books: Vec<Book>,
 }
 
+// Admin:
 #[derive(Template)]
 #[template(path = "admin/login.html")]
 pub struct LoginTemplate;
 
+// Books:
 #[derive(Template)]
 #[template(path = "admin/books/list.html")]
 pub struct BooksTemplate {

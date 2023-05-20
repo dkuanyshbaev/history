@@ -1,5 +1,3 @@
-use axum::body::Bytes;
-use axum_typed_multipart::{FieldData, TryFromMultipart};
 use serde::Deserialize;
 use sqlx::{
     query, query_as,
@@ -7,15 +5,7 @@ use sqlx::{
     Error, FromRow,
 };
 
-#[derive(TryFromMultipart)]
-pub struct BookWithImage {
-    pub name: String,
-    pub link: String,
-    pub description: String,
-    pub cover: FieldData<Bytes>,
-}
-
-#[derive(Deserialize, TryFromMultipart, Debug)]
+#[derive(Deserialize, Debug)]
 pub struct NewBook {
     pub name: String,
     pub link: String,
