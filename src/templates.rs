@@ -45,3 +45,9 @@ pub struct BooksTemplate {
 #[derive(Template)]
 #[template(path = "admin/books/add.html")]
 pub struct NewBookTemplate;
+
+#[derive(Template)]
+#[template(path = "admin/books/edit.html")]
+pub struct EditBookTemplate {
+    pub book: Book,
+}

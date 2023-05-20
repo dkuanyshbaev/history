@@ -1,22 +1,20 @@
 use axum::{
+    extract::DefaultBodyLimit,
     routing::{get, post},
     Router,
 };
 use axum_login::{
-    // axum_sessions::{async_session::MemoryStore as SessionMemoryStore, SessionLayer},
     axum_sessions::{async_session::CookieStore as SessionStore, SessionLayer},
     extractors::AuthContext,
     memory_store::MemoryStore as AuthMemoryStore,
-    AuthLayer,
-    AuthUser,
-    RequireAuthorizationLayer,
+    AuthLayer, AuthUser, RequireAuthorizationLayer,
 };
 use rand::Rng;
 use serde::Deserialize;
 use sqlx::sqlite::{SqlitePool, SqlitePoolOptions};
 use std::{collections::HashMap, env, net::SocketAddr, process, sync::Arc};
 use tokio::sync::RwLock;
-use tower_http::services::ServeDir;
+use tower_http::{limit::RequestBodyLimitLayer, services::ServeDir};
 
 use auth::{Role, User};
 use error::HistoryError;
@@ -94,6 +92,8 @@ async fn main() {
         // Layers
         .layer(auth_layer)
         .layer(session_layer)
+        .layer(DefaultBodyLimit::disable())
+        .layer(RequestBodyLimitLayer::new(23 * 1024 * 1024 /* 23mb */))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));

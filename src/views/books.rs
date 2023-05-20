@@ -3,10 +3,11 @@ use axum::{
     response::{IntoResponse, Redirect},
     Form,
 };
-use std::sync::Arc;
+use axum_typed_multipart::TypedMultipart;
+use std::{fs::File, io::prelude::*, sync::Arc};
 
 use crate::{
-    models::{Book, NewBook},
+    models::{Book, BookWithImage, NewBook},
     templates::*,
     HistoryError, HistoryState,
 };
@@ -32,8 +33,21 @@ pub async fn form() -> impl IntoResponse {
 
 pub async fn create(
     State(state): State<Arc<HistoryState>>,
-    Form(new_book): Form<NewBook>,
+    TypedMultipart(book_with_image): TypedMultipart<BookWithImage>,
 ) -> Result<impl IntoResponse, HistoryError> {
+    let new_book = NewBook {
+        name: book_with_image.name,
+        link: book_with_image.link,
+        description: book_with_image.description,
+        cover: book_with_image
+            .cover
+            .metadata
+            .file_name
+            .unwrap_or(String::new()),
+    };
+    let mut file = File::create(format!("static/img/{}", new_book.cover)).unwrap();
+    file.write_all(&book_with_image.cover.contents).unwrap();
+
     Book::create(&state.db, new_book).await?;
     Ok(Redirect::to("/books"))
 }

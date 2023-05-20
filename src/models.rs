@@ -1,3 +1,5 @@
+use axum::body::Bytes;
+use axum_typed_multipart::{FieldData, TryFromMultipart};
 use serde::Deserialize;
 use sqlx::{
     query, query_as,
@@ -5,21 +7,29 @@ use sqlx::{
     Error, FromRow,
 };
 
-#[derive(Deserialize, Debug)]
+#[derive(TryFromMultipart)]
+pub struct BookWithImage {
+    pub name: String,
+    pub link: String,
+    pub description: String,
+    pub cover: FieldData<Bytes>,
+}
+
+#[derive(Deserialize, TryFromMultipart, Debug)]
 pub struct NewBook {
     pub name: String,
+    pub link: String,
     pub description: String,
     pub cover: String,
-    pub file: String,
 }
 
 #[derive(FromRow, Clone)]
 pub struct Book {
     pub id: u32,
     pub name: String,
+    pub link: String,
     pub description: String,
     pub cover: String,
-    pub file: String,
 }
 
 impl Book {
@@ -37,11 +47,11 @@ impl Book {
     }
 
     pub async fn create(db: &SqlitePool, new_book: NewBook) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into books (name, description, cover, file) values (?, ?, ?, ?)")
+        query("INSERT into books (name, link, description, cover) values (?, ?, ?, ?)")
             .bind(new_book.name)
+            .bind(new_book.link)
             .bind(new_book.description)
             .bind(new_book.cover)
-            .bind(new_book.file)
             .execute(db)
             .await
     }
@@ -51,8 +61,9 @@ impl Book {
         id: u32,
         updated_book: NewBook,
     ) -> Result<SqliteQueryResult, Error> {
-        query("UPDATE books SET name = ?, description = ?, cover = ?, file = ? WHERE id = ?")
+        query("UPDATE books SET name = ?, link = ?, description = ?, cover = ? WHERE id = ?")
             .bind(updated_book.name)
+            .bind(updated_book.link)
             .bind(updated_book.description)
             .bind(updated_book.cover)
             .bind(id)
