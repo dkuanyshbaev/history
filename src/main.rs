@@ -18,13 +18,12 @@ use tower_http::{limit::RequestBodyLimitLayer, services::ServeDir};
 
 use auth::{Role, User};
 use error::HistoryError;
-use models::Book;
+use models::book::Book;
 use views::*;
 
 pub mod auth;
 pub mod error;
 pub mod models;
-pub mod templates;
 pub mod views;
 
 const DB_FILE: &str = "db/history.db";
@@ -87,7 +86,8 @@ async fn main() {
         .route("/", get(handlers::home))
         .route("/lib", get(handlers::lib))
         .route("/blog", get(handlers::blog))
-        .fallback(handlers::nothing)
+        // System
+        .fallback(nothing)
         // Layers
         .layer(auth_layer)
         .layer(session_layer)
@@ -101,4 +101,8 @@ async fn main() {
         .serve(history.into_make_service())
         .await
         .unwrap();
+}
+
+pub async fn nothing() -> HistoryError {
+    HistoryError::NotFound
 }

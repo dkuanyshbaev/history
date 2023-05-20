@@ -1,3 +1,4 @@
+use askama::Template;
 use axum::{
     body::Bytes,
     extract::{Path, State},
@@ -11,9 +12,8 @@ use std::{
 };
 
 use crate::{
-    models::{Book, NewBook},
-    templates::*,
-    HistoryError, HistoryState,
+    models::book::{Book, NewBook},
+    HistoryError, HistoryState, HtmlTemplate,
 };
 
 const IMG_PATH: &str = "static/img";
@@ -24,6 +24,22 @@ pub struct BookWithImage {
     pub link: String,
     pub description: String,
     pub cover: FieldData<Bytes>,
+}
+
+#[derive(Template)]
+#[template(path = "admin/books/list.html")]
+pub struct BooksTemplate {
+    pub books: Vec<Book>,
+}
+
+#[derive(Template)]
+#[template(path = "admin/books/add.html")]
+pub struct NewBookTemplate;
+
+#[derive(Template)]
+#[template(path = "admin/books/edit.html")]
+pub struct EditBookTemplate {
+    pub book: Book,
 }
 
 pub async fn all(

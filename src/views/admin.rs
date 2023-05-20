@@ -1,3 +1,4 @@
+use askama::Template;
 use axum::{
     extract::State,
     response::{IntoResponse, Redirect},
@@ -5,7 +6,11 @@ use axum::{
 };
 use std::sync::Arc;
 
-use crate::{templates::*, Auth, HistoryState, LoginInput, User};
+use crate::{Auth, HistoryState, HtmlTemplate, LoginInput, User};
+
+#[derive(Template)]
+#[template(path = "admin/login.html")]
+pub struct LoginTemplate;
 
 pub async fn form() -> impl IntoResponse {
     HtmlTemplate(LoginTemplate {})
