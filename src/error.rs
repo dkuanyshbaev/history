@@ -23,3 +23,9 @@ impl From<sqlx::Error> for HistoryError {
         HistoryError::InternalError
     }
 }
+
+impl From<std::io::Error> for HistoryError {
+    fn from(_: std::io::Error) -> Self {
+        HistoryError::InternalError
+    }
+}

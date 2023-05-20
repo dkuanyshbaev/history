@@ -19,17 +19,17 @@ pub async fn all(
     Ok(HtmlTemplate(BooksTemplate { books }))
 }
 
-pub async fn form() -> impl IntoResponse {
+pub async fn add() -> impl IntoResponse {
     HtmlTemplate(NewBookTemplate {})
 }
 
-// pub async fn show(
-//     Path(id): Path<u32>,
-//     State(state): State<Arc<HistoryState>>,
-// ) -> Result<impl IntoResponse, HistoryError> {
-//     let book = Book::fetch(&state.db, id).await?;
-//     Ok(HtmlTemplate(NewBookTemplate { book }))
-// }
+pub async fn edit(
+    Path(id): Path<u32>,
+    State(state): State<Arc<HistoryState>>,
+) -> Result<impl IntoResponse, HistoryError> {
+    let book = Book::fetch(&state.db, id).await?;
+    Ok(HtmlTemplate(EditBookTemplate { book }))
+}
 
 pub async fn create(
     State(state): State<Arc<HistoryState>>,
@@ -45,9 +45,8 @@ pub async fn create(
             .file_name
             .unwrap_or(String::new()),
     };
-    let mut file = File::create(format!("static/img/{}", new_book.cover)).unwrap();
-    file.write_all(&book_with_image.cover.contents).unwrap();
-
+    let mut file = File::create(format!("static/img/{}", new_book.cover))?;
+    file.write_all(&book_with_image.cover.contents)?;
     Book::create(&state.db, new_book).await?;
     Ok(Redirect::to("/books"))
 }
