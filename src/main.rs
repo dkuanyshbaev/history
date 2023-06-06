@@ -92,7 +92,7 @@ async fn main() {
         .layer(auth_layer)
         .layer(session_layer)
         .layer(DefaultBodyLimit::disable())
-        .layer(RequestBodyLimitLayer::new(12 * 1024 * 1024 /* 12mb */))
+        .layer(RequestBodyLimitLayer::new(8 * 1024 * 1024 /* 8mb */))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
