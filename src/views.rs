@@ -7,6 +7,10 @@ use axum::{
 pub mod admin;
 pub mod books;
 pub mod handlers;
+pub mod posts;
+pub mod publications;
+pub mod textbooks;
+pub mod texts;
 
 pub struct HtmlTemplate<T>(pub T);
 impl<T> IntoResponse for HtmlTemplate<T>

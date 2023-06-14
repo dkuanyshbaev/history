@@ -27,6 +27,7 @@ pub mod models;
 pub mod views;
 
 const DB_FILE: &str = "db/history.db";
+const IMG_PATH: &str = "static/img";
 
 type Auth = AuthContext<usize, User, AuthMemoryStore<usize, User>, Role>;
 type RequireAuth = RequireAuthorizationLayer<usize, User, Role>;
@@ -70,11 +71,43 @@ async fn main() {
     let auth_layer = AuthLayer::new(user_store, &session_secret);
 
     let history = Router::new()
+        // Posts
+        .route("/posts", get(posts::all))
+        .route("/posts/create", get(posts::add).post(posts::create))
+        .route("/posts/update/:id", get(posts::edit).post(posts::update))
+        .route("/posts/delete/:id", post(posts::delete))
         // Books
         .route("/books", get(books::all))
         .route("/books/create", get(books::add).post(books::create))
         .route("/books/update/:id", get(books::edit).post(books::update))
         .route("/books/delete/:id", post(books::delete))
+        // TextBooks
+        .route("/textbooks", get(textbooks::all))
+        .route(
+            "/textbooks/create",
+            get(textbooks::add).post(textbooks::create),
+        )
+        .route(
+            "/textbooks/update/:id",
+            get(textbooks::edit).post(textbooks::update),
+        )
+        .route("/textbooks/delete/:id", post(textbooks::delete))
+        // Publications
+        .route("/publications", get(publications::all))
+        .route(
+            "/publications/create",
+            get(publications::add).post(publications::create),
+        )
+        .route(
+            "/publications/update/:id",
+            get(publications::edit).post(publications::update),
+        )
+        .route("/publications/delete/:id", post(publications::delete))
+        // Texts
+        .route("/texts", get(texts::all))
+        .route("/texts/create", get(texts::add).post(texts::create))
+        .route("/texts/update/:id", get(texts::edit).post(texts::update))
+        .route("/texts/delete/:id", post(texts::delete))
         // Routes above are protected
         // .route_layer(RequireAuth::login_with_role(Role::Admin..))
         // Static

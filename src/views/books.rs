@@ -13,10 +13,8 @@ use std::{
 
 use crate::{
     models::book::{Book, NewBook},
-    HistoryError, HistoryState, HtmlTemplate,
+    HistoryError, HistoryState, HtmlTemplate, IMG_PATH,
 };
-
-const IMG_PATH: &str = "static/img";
 
 #[derive(TryFromMultipart)]
 pub struct BookWithImage {
