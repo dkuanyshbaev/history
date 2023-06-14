@@ -37,7 +37,7 @@ impl Post {
     }
 
     pub async fn create(db: &SqlitePool, new_post: NewPost) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into posts (name, lead, body, cover) values (?, ?, ?, ?)")
+        query("INSERT into posts (title, lead, body, cover) values (?, ?, ?, ?)")
             .bind(new_post.title)
             .bind(new_post.lead)
             .bind(new_post.body)

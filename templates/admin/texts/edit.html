@@ -1,0 +1,56 @@
+{% extends "../../base.html" %}
+{% block content %}
+<nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">На главную</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+            <div class="navbar-nav mx-auto">
+                <a class="nav-link" href="/posts">Блог</a>
+                <a class="nav-link" href="/books">Книги</a>
+                <a class="nav-link" href="/textbooks">Учебники</a>
+                <a class="nav-link" href="/publications">Публицистика</a>
+                <a class="nav-link active" href="/texts">Проза и Поэзия</a>
+            </div>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/logout">Выход</a>
+            </div>
+        </div>
+    </div>
+</nav>
+<br>
+<div class="container">
+    <form action="/texts/update/{{ text.id }}" method="post" enctype="multipart/form-data">
+        <div class="mb-3">
+            <label for="name" class="form-label">Название</label>
+            <input type="text" class="form-control" id="name" name="name" value="{{ text.name }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="link" class="form-label">Ссылка на файл</label>
+            <input type="text" class="form-control" id="link" name="link" value="{{ text.link }}" required>
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Описание</label>
+            <textarea class="form-control" id="description" name="description" rows="8" required>{{ text.description }}</textarea>
+        </div>
+        <img src="/static/img/{{ text.cover }}" style="max-width:200px;" class="img-thumbnail">
+        <div class="mb-3">
+            <label for="cover" class="form-label">Обложка</label>
+            <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help">
+            <div id="cover_help" class="form-text">Выберите новое изображение в формате jpg или png</div>
+        </div>
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="submit" class="btn btn-outline-primary">Сохранить</button>
+            <a class="btn btn-outline-primary" href="/texts">Отмена</a>
+        </div>
+    </form>
+    <br>
+    <form action="/texts/delete/{{ text.id }}" method="post">
+        <button class="btn btn-outline-danger" type="submit" onclick="return confirm('Вы уверены, что хотите удалить это?');">Удалить</button>
+    </form>
+    <br>
+    <br>
+</div>
+{% endblock %}
