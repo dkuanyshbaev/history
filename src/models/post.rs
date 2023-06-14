@@ -6,42 +6,42 @@ use sqlx::{
 };
 
 #[derive(Deserialize, Debug)]
-pub struct NewBook {
-    pub name: String,
-    pub link: String,
-    pub description: String,
+pub struct NewPost {
+    pub title: String,
+    pub lead: String,
+    pub body: String,
     pub cover: String,
 }
 
 #[derive(FromRow, Clone)]
-pub struct Book {
+pub struct Post {
     pub id: u32,
-    pub name: String,
-    pub link: String,
-    pub description: String,
+    pub title: String,
+    pub lead: String,
+    pub body: String,
     pub cover: String,
 }
 
-impl Book {
+impl Post {
     pub async fn list(db: &SqlitePool) -> Result<Vec<Self>, Error> {
-        query_as::<_, Book>("SELECT * FROM books ORDER BY id")
+        query_as::<_, Post>("SELECT * FROM posts ORDER BY id")
             .fetch_all(db)
             .await
     }
 
     pub async fn fetch(db: &SqlitePool, id: u32) -> Result<Self, Error> {
-        query_as::<_, Book>("SELECT * FROM books WHERE id = ?")
+        query_as::<_, Post>("SELECT * FROM posts WHERE id = ?")
             .bind(id)
             .fetch_one(db)
             .await
     }
 
-    pub async fn create(db: &SqlitePool, new_book: NewBook) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into books (name, link, description, cover) values (?, ?, ?, ?)")
-            .bind(new_book.name)
-            .bind(new_book.link)
-            .bind(new_book.description)
-            .bind(new_book.cover)
+    pub async fn create(db: &SqlitePool, new_post: NewPost) -> Result<SqliteQueryResult, Error> {
+        query("INSERT into posts (name, lead, body, cover) values (?, ?, ?, ?)")
+            .bind(new_post.title)
+            .bind(new_post.lead)
+            .bind(new_post.body)
+            .bind(new_post.cover)
             .execute(db)
             .await
     }
@@ -49,20 +49,20 @@ impl Book {
     pub async fn update(
         db: &SqlitePool,
         id: u32,
-        updated_book: NewBook,
+        updated_post: NewPost,
     ) -> Result<SqliteQueryResult, Error> {
-        query("UPDATE books SET name = ?, link = ?, description = ?, cover = ? WHERE id = ?")
-            .bind(updated_book.name)
-            .bind(updated_book.link)
-            .bind(updated_book.description)
-            .bind(updated_book.cover)
+        query("UPDATE posts SET title = ?, lead = ?, body = ?, cover = ? WHERE id = ?")
+            .bind(updated_post.title)
+            .bind(updated_post.lead)
+            .bind(updated_post.body)
+            .bind(updated_post.cover)
             .bind(id)
             .execute(db)
             .await
     }
 
     pub async fn delete(db: &SqlitePool, id: u32) -> Result<SqliteQueryResult, Error> {
-        query("DELETE FROM books WHERE id = ?")
+        query("DELETE FROM posts WHERE id = ?")
             .bind(id)
             .execute(db)
             .await
