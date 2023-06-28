@@ -1,3 +1,4 @@
+use chrono::{DateTime, Utc};
 use serde::Deserialize;
 use sqlx::{
     query, query_as,
@@ -20,11 +21,12 @@ pub struct Post {
     pub lead: String,
     pub body: String,
     pub cover: String,
+    pub created_at: DateTime<Utc>,
 }
 
 impl Post {
     pub async fn list(db: &SqlitePool) -> Result<Vec<Self>, Error> {
-        query_as::<_, Post>("SELECT * FROM posts ORDER BY id")
+        query_as::<_, Post>("SELECT * FROM posts ORDER BY created_at desc")
             .fetch_all(db)
             .await
     }
