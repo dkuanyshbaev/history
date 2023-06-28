@@ -5,11 +5,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>History</title>
         <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/css/summernote-lite.min.css" rel="stylesheet">
     </head>
     <body>
         <div id="content">
             {% block content %}{% endblock %}
         </div>
         <script src="/static/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript" src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="/static/js/summernote-lite.min.js"></script>
+        <script src="/static/css/lang/summernote-ru-RU.js"></script>
+        <script>
+            $('#summernote').summernote({
+                lang: 'ru-RU',
+                placeholder: '',
+                tabsize: 2,
+                height: 220,
+                toolbar: [
+                    ['style', ['style']],
+                    ['font', ['bold', 'underline', 'clear']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'video']],
+                    ['view', ['fullscreen', 'codeview', 'help']]
+                ]
+            });
+        </script>
     </body>
 </html>

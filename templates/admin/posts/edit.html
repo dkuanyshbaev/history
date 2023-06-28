@@ -32,8 +32,8 @@
             <input type="text" class="form-control" id="lead" name="lead" value="{{ post.lead }}" required>
         </div>
         <div class="mb-3">
-            <label for="body" class="form-label">Текст</label>
-            <textarea class="form-control" id="body" name="body" rows="8" required>{{ post.body }}</textarea>
+            <label for="summernote" class="form-label">Текст</label>
+            <textarea class="form-control" id="summernote" name="body" rows="8" required>{{ post.body }}</textarea>
         </div>
         <img src="/static/img/{{ post.cover }}" style="max-width:200px;" class="img-thumbnail">
         <div class="mb-3">
