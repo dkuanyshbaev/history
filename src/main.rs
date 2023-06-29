@@ -109,7 +109,7 @@ async fn main() {
         .route("/texts/update/:id", get(texts::edit).post(texts::update))
         .route("/texts/delete/:id", post(texts::delete))
         // Routes above are protected
-        // .route_layer(RequireAuth::login_with_role(Role::Admin..))
+        .route_layer(RequireAuth::login_with_role(Role::Admin..))
         // Static
         .nest_service("/static", ServeDir::new("static"))
         // Admin
