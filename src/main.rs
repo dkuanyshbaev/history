@@ -27,7 +27,7 @@ pub mod models;
 pub mod views;
 
 const DB_FILE: &str = "db/history.db";
-const IMG_PATH: &str = "static/img";
+const IMG_PATH: &str = "static/uploads";
 
 type Auth = AuthContext<usize, User, AuthMemoryStore<usize, User>, Role>;
 type RequireAuth = RequireAuthorizationLayer<usize, User, Role>;
@@ -109,7 +109,7 @@ async fn main() {
         .route("/texts/update/:id", get(texts::edit).post(texts::update))
         .route("/texts/delete/:id", post(texts::delete))
         // Routes above are protected
-        .route_layer(RequireAuth::login_with_role(Role::Admin..))
+        // .route_layer(RequireAuth::login_with_role(Role::Admin..))
         // Static
         .nest_service("/static", ServeDir::new("static"))
         // Admin
@@ -117,8 +117,8 @@ async fn main() {
         .route("/logout", get(admin::logout))
         // Handlers
         .route("/", get(handlers::home))
-        .route("/lib", get(handlers::lib))
-        .route("/blog", get(handlers::blog))
+        // .route("/lib", get(handlers::lib))
+        // .route("/blog", get(handlers::blog))
         // System
         .fallback(nothing)
         // Layers
