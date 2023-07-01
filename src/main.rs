@@ -18,7 +18,7 @@ use tower_http::{limit::RequestBodyLimitLayer, services::ServeDir};
 
 use auth::{Role, User};
 use error::HistoryError;
-use models::book::Book;
+use models::{book::Book, publication::Publication, text::Text};
 use views::*;
 
 pub mod auth;
@@ -72,26 +72,26 @@ async fn main() {
 
     let history = Router::new()
         // Posts
-        .route("/posts", get(posts::all))
-        .route("/posts/create", get(posts::add).post(posts::create))
-        .route("/posts/update/:id", get(posts::edit).post(posts::update))
-        .route("/posts/delete/:id", post(posts::delete))
+        // .route("/posts", get(posts::all))
+        // .route("/posts/create", get(posts::add).post(posts::create))
+        // .route("/posts/update/:id", get(posts::edit).post(posts::update))
+        // .route("/posts/delete/:id", post(posts::delete))
         // Books
         .route("/books", get(books::all))
         .route("/books/create", get(books::add).post(books::create))
         .route("/books/update/:id", get(books::edit).post(books::update))
         .route("/books/delete/:id", post(books::delete))
         // TextBooks
-        .route("/textbooks", get(textbooks::all))
-        .route(
-            "/textbooks/create",
-            get(textbooks::add).post(textbooks::create),
-        )
-        .route(
-            "/textbooks/update/:id",
-            get(textbooks::edit).post(textbooks::update),
-        )
-        .route("/textbooks/delete/:id", post(textbooks::delete))
+        // .route("/textbooks", get(textbooks::all))
+        // .route(
+        //     "/textbooks/create",
+        //     get(textbooks::add).post(textbooks::create),
+        // )
+        // .route(
+        //     "/textbooks/update/:id",
+        //     get(textbooks::edit).post(textbooks::update),
+        // )
+        // .route("/textbooks/delete/:id", post(textbooks::delete))
         // Publications
         .route("/publications", get(publications::all))
         .route(
