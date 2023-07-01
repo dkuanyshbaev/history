@@ -35,7 +35,7 @@
             <label for="description" class="form-label">Описание</label>
             <textarea class="form-control" id="description" name="description" rows="8" required>{{ textbook.description }}</textarea>
         </div>
-        <img src="/static/img/{{ textbook.cover }}" style="max-width:200px;" class="img-thumbnail">
+        <img src="/static/uploads/{{ textbook.cover }}" style="max-width:200px;" class="img-thumbnail">
         <div class="mb-3">
             <label for="cover" class="form-label">Обложка</label>
             <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help">

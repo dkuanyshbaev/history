@@ -1,26 +1,18 @@
 use askama::Template;
-use axum::response::IntoResponse;
+use axum::{extract::State, response::IntoResponse};
+use std::sync::Arc;
 
-use crate::{Book, HtmlTemplate};
+use crate::{Book, HistoryError, HistoryState, HtmlTemplate};
 
 #[derive(Template)]
 #[template(path = "main/home.html")]
-pub struct HomeTemplate;
-
-// #[derive(Template)]
-// #[template(path = "lib.html")]
-// pub struct LibTemplate {
-//     pub books: Vec<Book>,
-// }
-
-pub async fn home() -> impl IntoResponse {
-    HtmlTemplate(HomeTemplate {})
+pub struct HomeTemplate {
+    pub books: Vec<Book>,
 }
 
-// pub async fn lib() -> impl IntoResponse {
-//     HtmlTemplate(HomeTemplate {})
-// }
-//
-// pub async fn blog() -> impl IntoResponse {
-//     HtmlTemplate(HomeTemplate {})
-// }
+pub async fn home(
+    State(state): State<Arc<HistoryState>>,
+) -> Result<impl IntoResponse, HistoryError> {
+    let books = Book::list(&state.db).await?;
+    Ok(HtmlTemplate(HomeTemplate { books }))
+}

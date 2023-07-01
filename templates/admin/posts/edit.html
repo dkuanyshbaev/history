@@ -35,7 +35,7 @@
             <label for="summernote" class="form-label">Текст</label>
             <textarea class="form-control" id="summernote" name="body" rows="8" required>{{ post.body }}</textarea>
         </div>
-        <img src="/static/img/{{ post.cover }}" style="max-width:200px;" class="img-thumbnail">
+        <img src="/static/uploads/{{ post.cover }}" style="max-width:200px;" class="img-thumbnail">
         <div class="mb-3">
             <label for="cover" class="form-label">Обложка</label>
             <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help">

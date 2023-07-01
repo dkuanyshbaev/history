@@ -117,8 +117,6 @@ async fn main() {
         .route("/logout", get(admin::logout))
         // Handlers
         .route("/", get(handlers::home))
-        // .route("/lib", get(handlers::lib))
-        // .route("/blog", get(handlers::blog))
         // System
         .fallback(nothing)
         // Layers
