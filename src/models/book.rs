@@ -10,16 +10,14 @@ pub struct NewBook {
     pub name: String,
     pub link: String,
     pub description: String,
-    pub cover: String,
 }
 
-#[derive(FromRow, Clone)]
+#[derive(Deserialize, FromRow, Clone)]
 pub struct Book {
     pub id: u32,
     pub name: String,
     pub link: String,
     pub description: String,
-    pub cover: String,
 }
 
 impl Book {
@@ -37,11 +35,10 @@ impl Book {
     }
 
     pub async fn create(db: &SqlitePool, new_book: NewBook) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into books (name, link, description, cover) values (?, ?, ?, ?)")
+        query("INSERT into books (name, link, description) values (?, ?, ?)")
             .bind(new_book.name)
             .bind(new_book.link)
             .bind(new_book.description)
-            .bind(new_book.cover)
             .execute(db)
             .await
     }
@@ -51,11 +48,10 @@ impl Book {
         id: u32,
         updated_book: NewBook,
     ) -> Result<SqliteQueryResult, Error> {
-        query("UPDATE books SET name = ?, link = ?, description = ?, cover = ? WHERE id = ?")
+        query("UPDATE books SET name = ?, link = ?, description = ? WHERE id = ?")
             .bind(updated_book.name)
             .bind(updated_book.link)
             .bind(updated_book.description)
-            .bind(updated_book.cover)
             .bind(id)
             .execute(db)
             .await

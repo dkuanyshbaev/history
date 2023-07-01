@@ -10,7 +10,6 @@ pub struct NewText {
     pub name: String,
     pub link: String,
     pub description: String,
-    pub cover: String,
 }
 
 #[derive(FromRow, Clone)]
@@ -19,7 +18,6 @@ pub struct Text {
     pub name: String,
     pub link: String,
     pub description: String,
-    pub cover: String,
 }
 
 impl Text {
@@ -37,11 +35,10 @@ impl Text {
     }
 
     pub async fn create(db: &SqlitePool, new_text: NewText) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into texts (name, link, description, cover) values (?, ?, ?, ?)")
+        query("INSERT into texts (name, link, description) values (?, ?, ?)")
             .bind(new_text.name)
             .bind(new_text.link)
             .bind(new_text.description)
-            .bind(new_text.cover)
             .execute(db)
             .await
     }
@@ -51,11 +48,10 @@ impl Text {
         id: u32,
         updated_text: NewText,
     ) -> Result<SqliteQueryResult, Error> {
-        query("UPDATE texts SET name = ?, link = ?, description = ?, cover = ? WHERE id = ?")
+        query("UPDATE texts SET name = ?, link = ?, description = ? WHERE id = ?")
             .bind(updated_text.name)
             .bind(updated_text.link)
             .bind(updated_text.description)
-            .bind(updated_text.cover)
             .bind(id)
             .execute(db)
             .await

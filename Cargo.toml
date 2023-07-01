@@ -5,12 +5,13 @@ edition = "2021"
 
 [dependencies]
 axum = { version = "0.6", features = ["multipart"] }
-axum_typed_multipart = "0.3.4"
+# axum_typed_multipart = "0.3.4"
 axum-login = "0.5"
 askama = "0.12"
-chrono = "0.4.26"
+# chrono = "0.4.26"
 tokio = { version = "1.0", features = ["full"] }
 tower-http = { version = "0.4", features = ["fs", "limit"] }
 serde = { version = "1.0", features = ["derive"] }
 rand = { version = "0.8", features = ["min_const_gen"] }
-sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "sqlite", "chrono" ] }
+# sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "sqlite", "chrono" ] }
+sqlx = { version = "0.6", features = [ "runtime-tokio-rustls", "sqlite" ] }

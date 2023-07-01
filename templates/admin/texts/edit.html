@@ -20,7 +20,7 @@
 </nav>
 <br>
 <div class="container">
-    <form action="/texts/update/{{ text.id }}" method="post" enctype="multipart/form-data">
+    <form action="/texts/update/{{ text.id }}" method="post">
         <div class="mb-3">
             <label for="name" class="form-label">Название</label>
             <input type="text" class="form-control" id="name" name="name" value="{{ text.name }}" required>
@@ -32,12 +32,6 @@
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
             <textarea class="form-control" id="description" name="description" rows="8" required>{{ text.description }}</textarea>
-        </div>
-        <img src="/static/uploads/{{ text.cover }}" style="max-width:200px;" class="img-thumbnail">
-        <div class="mb-3">
-            <label for="cover" class="form-label">Обложка</label>
-            <input type="file" accept=".jpg,.png" class="form-control-file" id="cover" name="cover" aria-describedby="cover_help">
-            <div id="cover_help" class="form-text">Выберите новое изображение в формате jpg или png, не более 8 Мб</div>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
             <button type="submit" class="btn btn-outline-primary">Сохранить</button>

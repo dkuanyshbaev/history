@@ -5,7 +5,7 @@
         <h1>
             Шубин<br>Александр<br>Владленович
         </h1>
-        {# <p><span class="typed" data-typed-items="Историк, Писатель"></span></p> #}
+        <p><span class="typed" data-typed-items="Историк, Писатель"></span></p>
     </div>
 </section>
 
@@ -64,69 +64,37 @@
             </div>
             <div class="row">
                 <div class="col-lg-12" data-aos="fade-up">
-                    <h3 class="resume-title">Научные книги и статьи</h3>
 
+                    <h3 class="resume-title">Научные книги и статьи</h3>
                     {% for book in books %}
                     <div class="resume-item">
                         <h4>{{ book.name }}</h4>
                         <h5><a href="{{ book.link }}", target = "_blank">Скачать</a></h5>
-                        <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
+                        {# <p><em>???</em></p> #}
                         <p>{{ book.description }}</p>
                     </div>
                     {% endfor %}
 
-                </div>
-            </div>
-        </div>
-    </section>
+                    <h3 id="publications" class="resume-title">Публицистика</h3>
+                    {% for publication in publications %}
+                    <div class="resume-item">
+                        <h4>{{ publication.name }}</h4>
+                        <h5><a href="{{ publication.link }}", target = "_blank">Скачать</a></h5>
+                        {# <p><em>???</em></p> #}
+                        <p>{{ publication.description }}</p>
+                    </div>
+                    {% endfor %}
 
-    <section id="publications" class="resume section-bg">
-        <div class="container">
-            <div class="section-title">
-                <h2>Публицистика</h2>
-                <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-12" data-aos="fade-up">
-                    <h3 class="resume-title">Sumary</h3>
+                    <h3 id="texts" class="resume-title">Проза и поэзия</h3>
+                    {% for text in texts %}
                     <div class="resume-item">
-                        <h4>Master of Fine Arts &amp; Graphic Design</h4>
-                        <h5>2015 - 2016</h5>
-                        <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
-                        <p>Qui deserunt veniam. Et sed aliquam labore tempore sed quisquam iusto autem sit. Ea vero voluptatum qui ut dignissimos deleniti nerada porti sand markend</p>
+                        <h4>{{ text.name }}</h4>
+                        <h5><a href="{{ text.link }}", target = "_blank">Скачать</a></h5>
+                        {# <p><em>???</em></p> #}
+                        <p>{{ text.description }}</p>
                     </div>
-                    <div class="resume-item">
-                        <h4>Bachelor of Fine Arts &amp; Graphic Design</h4>
-                        <h5>2010 - 2014</h5>
-                        <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
-                        <p>Quia nobis sequi est occaecati aut. Repudiandae et iusto quae reiciendis et quis Eius vel ratione eius unde vitae rerum voluptates asperiores voluptatem Earum molestiae consequatur neque etlon sader mart dila</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+                    {% endfor %}
 
-    <section id="texts" class="resume">
-        <div class="container">
-            <div class="section-title">
-                <h2>Проза и Поэзия</h2>
-                <p>Magnam dolores commodi suscipit. Necessitatibus eius consequatur ex aliquid fuga eum quidem. Sit sint consectetur velit. Quisquam quos quisquam cupiditate. Et nemo qui impedit suscipit alias ea. Quia fugiat sit in iste officiis commodi quidem hic quas.</p>
-            </div>
-            <div class="row">
-                <div class="col-lg-12" data-aos="fade-up">
-                    <h3 class="resume-title">Sumary</h3>
-                    <div class="resume-item">
-                        <h4>Master of Fine Arts &amp; Graphic Design</h4>
-                        <h5>2015 - 2016</h5>
-                        <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
-                        <p>Qui deserunt veniam. Et sed aliquam labore tempore sed quisquam iusto autem sit. Ea vero voluptatum qui ut dignissimos deleniti nerada porti sand markend</p>
-                    </div>
-                    <div class="resume-item">
-                        <h4>Bachelor of Fine Arts &amp; Graphic Design</h4>
-                        <h5>2010 - 2014</h5>
-                        <p><em>Rochester Institute of Technology, Rochester, NY</em></p>
-                        <p>Quia nobis sequi est occaecati aut. Repudiandae et iusto quae reiciendis et quis Eius vel ratione eius unde vitae rerum voluptates asperiores voluptatem Earum molestiae consequatur neque etlon sader mart dila</p>
-                    </div>
                 </div>
             </div>
         </div>

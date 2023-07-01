@@ -10,7 +10,6 @@ pub struct NewPublication {
     pub name: String,
     pub link: String,
     pub description: String,
-    pub cover: String,
 }
 
 #[derive(FromRow, Clone)]
@@ -19,7 +18,6 @@ pub struct Publication {
     pub name: String,
     pub link: String,
     pub description: String,
-    pub cover: String,
 }
 
 impl Publication {
@@ -40,11 +38,10 @@ impl Publication {
         db: &SqlitePool,
         new_publication: NewPublication,
     ) -> Result<SqliteQueryResult, Error> {
-        query("INSERT into publications (name, link, description, cover) values (?, ?, ?, ?)")
+        query("INSERT into publications (name, link, description) values (?, ?, ?)")
             .bind(new_publication.name)
             .bind(new_publication.link)
             .bind(new_publication.description)
-            .bind(new_publication.cover)
             .execute(db)
             .await
     }
@@ -54,11 +51,10 @@ impl Publication {
         id: u32,
         updated_publication: NewPublication,
     ) -> Result<SqliteQueryResult, Error> {
-        query("UPDATE publications SET name = ?, link = ?, description = ?, cover = ? WHERE id = ?")
+        query("UPDATE publications SET name = ?, link = ?, description = ? WHERE id = ?")
             .bind(updated_publication.name)
             .bind(updated_publication.link)
             .bind(updated_publication.description)
-            .bind(updated_publication.cover)
             .bind(id)
             .execute(db)
             .await
