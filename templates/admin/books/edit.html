@@ -27,11 +27,11 @@
         </div>
         <div class="mb-3">
             <label for="link" class="form-label">Ссылка на файл</label>
-            <input type="text" class="form-control" id="link" name="link" value="{{ book.link }}" required>
+            <input type="text" class="form-control" id="link" name="link" value="{{ book.link }}">
         </div>
         <div class="mb-3">
             <label for="description" class="form-label">Описание</label>
-            <textarea class="form-control" id="description" name="description" rows="8" required>{{ book.description }}</textarea>
+            <textarea class="form-control" id="description" name="description" rows="8">{{ book.description }}</textarea>
         </div>
         <div class="btn-group" role="group" aria-label="Basic example">
             <button type="submit" class="btn btn-outline-primary">Сохранить</button>

@@ -69,7 +69,13 @@
                     {% for book in books %}
                     <div class="resume-item">
                         <h4>{{ book.name }}</h4>
-                        <h5><a href="{{ book.link }}", target = "_blank">Скачать</a></h5>
+
+                        {% if book.link.len() == 0 -%}
+                            <h5>Не доступно</h5>
+                        {% else -%}
+                            <h5><a href="{{ book.link }}", target = "_blank">Скачать</a></h5>
+                        {% endif -%}
+
                         {# <p><em>???</em></p> #}
                         <p>{{ book.description }}</p>
                     </div>
@@ -79,7 +85,13 @@
                     {% for publication in publications %}
                     <div class="resume-item">
                         <h4>{{ publication.name }}</h4>
-                        <h5><a href="{{ publication.link }}", target = "_blank">Скачать</a></h5>
+
+                        {% if publication.link.len() == 0 -%}
+                            <h5>Не доступно</h5>
+                        {% else -%}
+                            <h5><a href="{{ publication.link }}", target = "_blank">Скачать</a></h5>
+                        {% endif -%}
+
                         {# <p><em>???</em></p> #}
                         <p>{{ publication.description }}</p>
                     </div>
@@ -89,7 +101,13 @@
                     {% for text in texts %}
                     <div class="resume-item">
                         <h4>{{ text.name }}</h4>
-                        <h5><a href="{{ text.link }}", target = "_blank">Скачать</a></h5>
+
+                        {% if text.link.len() == 0 -%}
+                            <h5>Не доступно</h5>
+                        {% else -%}
+                            <h5><a href="{{ text.link }}", target = "_blank">Скачать</a></h5>
+                        {% endif -%}
+
                         {# <p><em>???</em></p> #}
                         <p>{{ text.description }}</p>
                     </div>
