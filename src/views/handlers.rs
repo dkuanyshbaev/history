@@ -5,7 +5,7 @@ use std::sync::Arc;
 use crate::{Book, HistoryError, HistoryState, HtmlTemplate, Publication, Text};
 
 #[derive(Template)]
-#[template(path = "main/home.html")]
+#[template(path = "home.html")]
 pub struct HomeTemplate {
     pub books: Vec<Book>,
     pub publications: Vec<Publication>,
