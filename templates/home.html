@@ -108,7 +108,7 @@
                                 {% endif -%}
 
                                 {# <p><em>???</em></p> #}
-                                <p>{{ book.description }}</p>
+                                <p>{{ book.description|safe }}</p>
                             </div>
                             {% endfor %}
 
@@ -124,7 +124,7 @@
                                 {% endif -%}
 
                                 {# <p><em>???</em></p> #}
-                                <p>{{ publication.description }}</p>
+                                <p>{{ publication.description|safe }}</p>
                             </div>
                             {% endfor %}
 
@@ -140,7 +140,7 @@
                                 {% endif -%}
 
                                 {# <p><em>???</em></p> #}
-                                <p>{{ text.description }}</p>
+                                <p>{{ text.description|safe }}</p>
                             </div>
                             {% endfor %}
 
