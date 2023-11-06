@@ -5,6 +5,7 @@ use axum::{
     response::{IntoResponse, Redirect},
 };
 use axum_typed_multipart::{FieldData, TryFromMultipart, TypedMultipart};
+use chrono::Local;
 use std::{
     fs::{remove_file, File},
     io::prelude::*,
@@ -63,15 +64,18 @@ pub async fn create(
     State(state): State<Arc<HistoryState>>,
     TypedMultipart(post_with_image): TypedMultipart<PostWithImage>,
 ) -> Result<impl IntoResponse, HistoryError> {
+    let file_name = Local::now().timestamp().to_string()
+        + "_"
+        + &post_with_image
+            .cover
+            .metadata
+            .file_name
+            .unwrap_or(String::new());
     let new_post = NewPost {
         title: post_with_image.title,
         lead: post_with_image.lead,
         body: post_with_image.body,
-        cover: post_with_image
-            .cover
-            .metadata
-            .file_name
-            .unwrap_or(String::new()),
+        cover: file_name,
     };
     let mut file = File::create(format!("{}/{}", IMG_PATH, new_post.cover))?;
     file.write_all(&post_with_image.cover.contents)?;
@@ -85,7 +89,13 @@ pub async fn update(
     TypedMultipart(post_with_image): TypedMultipart<PostWithImage>,
 ) -> Result<impl IntoResponse, HistoryError> {
     let old_post = Post::fetch(&state.db, id).await?;
-    let file_name = post_with_image.cover.metadata.file_name.unwrap();
+    let file_name = Local::now().timestamp().to_string()
+        + "_"
+        + &post_with_image
+            .cover
+            .metadata
+            .file_name
+            .unwrap_or(String::new());
     let new_cover = if file_name.eq(&"".to_string()) {
         old_post.cover
     } else {
