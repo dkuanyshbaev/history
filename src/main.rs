@@ -1,5 +1,5 @@
 use axum::{
-    // extract::DefaultBodyLimit,
+    extract::DefaultBodyLimit,
     routing::{get, post},
     Router,
 };
@@ -14,8 +14,7 @@ use serde::Deserialize;
 use sqlx::sqlite::{SqlitePool, SqlitePoolOptions};
 use std::{collections::HashMap, env, net::SocketAddr, process, sync::Arc};
 use tokio::sync::RwLock;
-use tower_http::services::ServeDir;
-// use tower_http::{limit::RequestBodyLimitLayer, services::ServeDir};
+use tower_http::{limit::RequestBodyLimitLayer, services::ServeDir};
 
 use auth::{Role, User};
 use error::HistoryError;
@@ -28,7 +27,7 @@ pub mod models;
 pub mod views;
 
 const DB_FILE: &str = "db/history.db";
-// const IMG_PATH: &str = "static/uploads";
+const IMG_PATH: &str = "static/uploads";
 
 type Auth = AuthContext<usize, User, AuthMemoryStore<usize, User>, Role>;
 type RequireAuth = RequireAuthorizationLayer<usize, User, Role>;
@@ -72,6 +71,11 @@ async fn main() {
     let auth_layer = AuthLayer::new(user_store, &session_secret);
 
     let history = Router::new()
+        // Posts
+        .route("/posts", get(posts::all))
+        .route("/posts/create", get(posts::add).post(posts::create))
+        .route("/posts/update/:id", get(posts::edit).post(posts::update))
+        .route("/posts/delete/:id", post(posts::delete))
         // Books
         .route("/books", get(books::all))
         .route("/books/create", get(books::add).post(books::create))
@@ -107,9 +111,8 @@ async fn main() {
         // Layers
         .layer(auth_layer)
         .layer(session_layer)
-        // ???
-        // .layer(DefaultBodyLimit::disable())
-        // .layer(RequestBodyLimitLayer::new(8 * 1024 * 1024 #<{(| 8mb |)}>#))
+        .layer(DefaultBodyLimit::disable())
+        .layer(RequestBodyLimitLayer::new(8 * 1024 * 1024 /* 8mb */))
         .with_state(state);
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 8888));
