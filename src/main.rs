@@ -18,7 +18,7 @@ use tower_http::{limit::RequestBodyLimitLayer, services::ServeDir};
 
 use auth::{Role, User};
 use error::HistoryError;
-use models::{book::Book, publication::Publication, text::Text};
+use models::{book::Book, post::Post, publication::Publication, text::Text};
 use views::*;
 
 pub mod auth;
@@ -106,6 +106,8 @@ async fn main() {
         .route("/logout", get(admin::logout))
         // Handlers
         .route("/", get(handlers::home))
+        .route("/blog", get(handlers::blog))
+        .route("/entry/:id", get(handlers::entry))
         // System
         .fallback(nothing)
         // Layers
