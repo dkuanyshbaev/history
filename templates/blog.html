@@ -49,7 +49,7 @@
                         <li><a href="https://shubinav.ru/#books" class="nav-link scrollto"><i class="bx bx-book"></i> <span>Научные книги и статьи</span></a></li>
                         <li><a href="https://shubinav.ru/#publications" class="nav-link scrollto"><i class="bx bx-book"></i> <span>Публицистика</span></a></li>
                         <li><a href="https://shubinav.ru/#texts" class="nav-link scrollto"><i class="bx bx-book"></i> <span>Проза и поэзия</span></a></li>
-                        <li><a href="https://shubinav.ru/blog" class="nav-link scrollto"><i class="bx bx-book"></i> <span>Блог</span></a></li>
+                        <li><a href="https://shubinav.ru/blog" class="nav-link scrollto"><i class="bx bx-book"></i> <span>Школа</span></a></li>
                         <li><a href="https://shubinav.ru/#contact" class="nav-link scrollto"><i class="bx bx-envelope"></i> <span>Контакты</span></a></li>
                     </ul>
                 </nav>
@@ -60,8 +60,8 @@
             <section id="contact" class="contact">
                 <div class="container">
                     <div class="section-title" style="margin-bottom:200px;">
-                        <h2>Блог</h2>
-                        <p>Magnam dolores commodi suscipit</p><br>
+                        <h2>Школа</h2>
+                        <!-- <p>Magnam dolores commodi suscipit</p><br> -->
                         {% for post in posts %}
                             <a href="/entry/{{ post.id }}"><h4>{{ post.title }}</h4></a>
                             <p>{{ post.lead|safe }}</p><br>
